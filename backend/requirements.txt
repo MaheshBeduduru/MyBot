@@ -1,0 +1,7 @@
+fastapi==0.104.1
+uvicorn==0.24.0
+# Use a transformers version with broader wheel support; local install may still require dependencies.
+transformers==4.25.1
+torch>=2.0.0
+# HTTP client used for Hugging Face Inference API fallback
+httpx>=0.24.0
