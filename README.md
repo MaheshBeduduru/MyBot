@@ -1,197 +1,100 @@
-# Chatbot POC (WebSocket + Streaming)
+Chatbot Project (FastAPI + React)
 
-A full-stack proof of concept for a real-time chatbot using FastAPI backend with WebSocket streaming and React frontend.
+This project is a proof-of-concept chatbot that uses a FastAPI backend with WebSocket streaming and a React frontend. It supports integration with cloud LLM APIs (OpenAI, Cohere) or local models (GPT4All, Ollama).
 
-## 🎯 Features
+🚀 Getting Started
 
-- **Real-time WebSocket Communication** - Instant message delivery between client and server
-- **Streaming Responses** - Bot responses stream word-by-word for dynamic UI updates
-- **AI-Powered** - Uses Hugging Face Transformers (GPT-2) for text generation
-- **Error Handling** - Graceful error messages and connection management
-- **Responsive UI** - Mobile-friendly interface with gradient design
-- **Enter Key Support** - Send messages with Enter key
+1. Clone the Repository
 
-## 📁 Project Structure
+git clone https://github.com/your-username/chatbot-project.git
+cd chatbot-project2. Backend Setup (FastAPI)
 
-```
-MyBot/
-├── backend/
-│   ├── app.py              # FastAPI WebSocket server
-│   └── requirements.txt     # Python dependencies
-├── src/
-│   ├── App.js              # React component with WebSocket client
-│   └── index.js            # React entry point
-├── public/
-│   └── index.html          # HTML template
-├── package.json            # Node.js dependencies
-└── README.md
-```
+Create and Activate Virtual Environment
 
-## 🚀 Quick Start
+Windows PowerShell
 
-### Prerequisites
-- Python 3.8+ (for backend)
-- Node.js 14+ (for frontend)
-- pip (Python package manager)
-- npm (Node package manager)
+python -m venv venv
+.\venv\Scripts\activate
 
-### Backend Setup (Python)
+Linux/macOS
 
-1. **Open a terminal in the `backend/` directory:**
-   ```powershell
-   cd backend
-   ```
+python3 -m venv venv
+source venv/bin/activate
 
-2. **Create a virtual environment (recommended):**
-   ```powershell
-   python -m venv venv
-   ```
+Install Dependencies
 
-3. **Activate the virtual environment:**
-   - On Windows (PowerShell):
-     ```powershell
-     .\venv\Scripts\Activate.ps1
-     ```
-   - On Windows (Command Prompt):
-     ```cmd
-     venv\Scripts\activate.bat
-     ```
-   - On macOS/Linux:
-     ```bash
-     source venv/bin/activate
-     ```
+pip install -r requirements.txt
 
-4. **Install dependencies:**
-   ```powershell
-   pip install -r requirements.txt
-   ```
-   
-   ⚠️ **Note:** First installation may take 5-10 minutes as it downloads the GPT-2 model (~500MB)
+Environment Variables
 
-5. **Run the FastAPI server:**
-   ```powershell
-   python app.py
-   ```
-   
-   You should see:
-   ```
-   Loading model... This may take a moment on first run.
-   Model loaded successfully!
-   INFO:     Uvicorn running on http://0.0.0.0:8000
-   ```
+Create a .env file in the project root (this file is ignored by Git):
 
-### Frontend Setup (React)
+OPENAI_API_KEY=sk-your-openai-key
+COHERE_API_KEY=your-cohere-key
 
-1. **Open a new terminal in the root directory (MyBot/):**
-   ```powershell
-   cd ..
-   ```
+Run Backend
 
-2. **Install Node.js dependencies:**
-   ```powershell
-   npm install
-   ```
+uvicorn backend:app --reload
 
-3. **Start the React development server:**
-   ```powershell
-   npm start
-   ```
-   
-   The browser should automatically open to `http://localhost:3000`
+Backend will be available at http://localhost:8000/ws.
 
-## 💬 How to Use
+3. Frontend Setup (React)
 
-1. Ensure both the **backend server** (on port 8000) and **frontend** (on port 3000) are running
-2. Type a message in the input field
-3. Click **Send** or press **Enter**
-4. Watch the bot response stream in real-time, word-by-word
-5. The chat area clears automatically for the next message
+Install Dependencies
 
-## 🔧 How It Works
+npm install
 
-### Backend Flow
-```
-User Message → WebSocket → FastAPI Server 
-    → GPT-2 Model Generates Text
-    → Response Streamed Word-by-Word
-    → Words Sent Back via WebSocket → React Frontend
-```
+Run Frontend
 
-### Frontend Flow
-```
-User Input → Send Message via WebSocket
-    → Receive Words → Accumulate in State
-    → Real-time Display Update
-    → Show [END] Marker → Ready for Next Message
-```
+npm start
 
-## 📝 Configuration
+Frontend will run on http://localhost:3000 and connect to the backend WebSocket.
 
-### Change the AI Model
-Edit `backend/app.py`, line ~17:
-```python
-generator = pipeline("text-generation", model="gpt2")  # Change "gpt2" to another model
-```
+📂 Project Structure
 
-Popular alternatives:
-- `"distilgpt2"` - Faster, smaller model
-- `"gpt2-medium"` - Better quality responses
-- `"EleutherAI/gpt-neo-125m"` - More advanced
+project-root/
+├── backend/           # FastAPI backend code
+├── frontend/          # React frontend code
+├── models/            # Local model files (ignored in Git)
+├── .env               # API keys (ignored in Git)
+├── requirements.txt   # Python dependencies
+├── package.json       # Node dependencies
+└── README.md          # Documentation
 
-### Adjust Response Length
-Edit `backend/app.py`, line ~42:
-```python
-outputs = generator(data, max_length=100, do_sample=True)  # Change max_length
-```
+🔑 Notes
 
-### Change Server Port
-Edit `backend/app.py`, line ~63:
-```python
-uvicorn.run(app, host="0.0.0.0", port=8000)  # Change port
-```
+Do not commit .env, venv/, node_modules/, or models/.
 
-Update the WebSocket URL in `src/App.js`, line ~13:
-```javascript
-const ws = new WebSocket("ws://localhost:8000/ws");  // Update port
-```
+Update .gitignore to exclude sensitive and generated files.
 
-## 🐛 Troubleshooting
+Use branches for new features and open Pull Requests for collaboration.
 
-| Issue | Solution |
-|-------|----------|
-| **"Cannot connect to server"** | Make sure backend is running on port 8000 |
-| **"Module not found" (Python)** | Activate virtual environment and run `pip install -r requirements.txt` |
-| **Slow first request** | First model load takes time. Subsequent requests are faster |
-| **Port 8000 already in use** | Kill the process on that port or change the port number |
-| **WebSocket connection error** | Check backend server is running: `http://localhost:8000` |
+🤝 Collaboration Workflow
 
-## 📦 Dependencies
+Pull latest changes before starting work:
 
-### Backend
-- **FastAPI** - Modern web framework for building APIs
-- **Uvicorn** - ASGI server to run FastAPI
-- **Transformers** - Hugging Face library for NLP models
-- **Torch** - Deep learning framework
+git pull origin main
 
-### Frontend
-- **React** - UI library
-- **React DOM** - React rendering engine
-- **React Scripts** - Build and development tools
+Create a new branch for your feature:
 
-## 🔐 Notes
+git checkout -b feature/my-feature
 
-- This is a POC - not optimized for production
-- Large language models consume significant system resources
-- Consider using GPU for faster inference
-- Error handling includes disconnection management
+Commit and push changes:
 
-## 📚 Learn More
+git add .
+git commit -m "Added streaming support"
+git push origin feature/my-feature
 
-- [FastAPI Documentation](https://fastapi.tiangolo.com/)
-- [WebSocket API](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)
-- [Hugging Face Transformers](https://huggingface.co/docs/transformers/)
-- [React Documentation](https://react.dev/)
+Open a Pull Request for review and merge.
 
----
+📑 Supported Models
 
-**Built with ❤️ as a chatbot proof of concept**
+OpenAI: gpt-3.5-turbo, gpt-4
+
+Cohere: command-a-03-2025, command-light
+
+Local: GPT4All, Ollama
+
+📖 License
+
+This project is for educational and proof-of-concept purposes.
